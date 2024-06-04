@@ -1,12 +1,20 @@
-FROM frolvlad/alpine-miniconda3:python3.7
+# Use an official Python runtime as a parent image
+FROM python:3.8-slim
 
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the requirements file into the container
 COPY requirements.txt .
 
-RUN pip install -r requirements.txt && \
-	rm requirements.txt
+# Install any dependencies specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 80
-
+# Copy the app directory contents into the container
 COPY ./app /app
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Run uvicorn server
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
